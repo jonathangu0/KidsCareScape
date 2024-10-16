@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html>
+<title>Childcare Centerss</title>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="../../keen/keen-dashboards.css" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css' rel='stylesheet' type='text/css' />
+<link rel="stylesheet" type="text/css"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/v/dt/dt-1.10.12/r-2.1.0/se-1.2.0/datatables.min.css">
+<link href="https:../../build/nv.d3.css" rel="stylesheet" type="text/css">
+<style>
+	body {
+		background-color: white;
+	}
+
+	#map {
+		height: 100%;
+		width: 100%;
+		background-color: #333;
+		pointer-events: all;
+	}
+
+	.point0_2 {
+		fill: #59a14f;
+		fill-opacity: .7;
+		stroke: #fff;
+
+	}
+
+	.point2_5 {
+		fill: #f28e2c;
+		fill-opacity: .7;
+		stroke: #fff;
+
+	}
+
+	.point3_5 {
+		fill: #b55a9d;
+		fill-opacity: .7;
+		stroke: #fff;
+
+	}
+
+	.point6_16 {
+		fill: #DF3B20;
+		fill-opacity: .7;
+		stroke: #fff;
+
+	}
+
+	.point0_16 {
+		fill: #5561ec;
+		fill-opacity: .7;
+		stroke: #fff;
+
+	}
+
+	.pointOther {
+		fill: #999A9C;
+		fill-opacity: .7;
+		stroke: #fff;
+
+	}
+
+	.tooltipFacades {
+		color: #222;
+		background: #fff;
+		padding: .5em;
+		text-shadow: #f5f5f5 0 1px 0;
+		border-radius: 7px;
+		box-shadow: 0px 0px 2px 0px #a6a6a6;
+		opacity: 0.9;
+		position: absolute;
+		visibility: hidden;
+	}
+
+
+
+	/* @media( max-width:1200px){
+	.dobmain	{
+		padding-top:50px;
+	}
+	.legendShed {
+		visibility:hidden;
+	}
+	.legendCD {
+		visibility:hidden;
+	}
+	.ui {
+		margin-top: -150px;
+	}
+}
+
+@media ( max-width:2100px){
+	.summarytxt_sheds {
+		font-size: 12px !important;
+	}
+	.summarytxt_avgAge {
+		font-size: 12px !important;
+	}
+	.summarytxt_feet {
+		font-size: 12px !important;
+	}
+	#summary1_sheds {
+		font-size: 25px !important;
+	}
+	#summary2_avgAge {
+		font-size: 25px !important;
+	}
+	#summary3_feet {
+		font-size: 25px !important;
+	}
+	.summarytxt {
+		font-size: 12px !important;
+	}
+} */
+
+
+	svg {
+		display: block;
+	}
+
+
+	#chart-01 {
+		box-sizing: border-box;
+		width: 100%;
+		< !-- height: 150px;
+		-->height: 100%;
+		< !-- border: 0.5px solid gray;
+		-->float: left;
+		background-color: #dfdfdf;
+		< !-- margin: 0px 0px 12px;
+		-->
+	}
+
+	#chart-boro-facades {
+		box-sizing: border-box;
+		width: 100%;
+		height: 180px;
+		/* height: 100%; */
+		float: left;
+		background-color: #dfdfdf;
+		margin-bottom: 10px;
+	}
+
+	#chart-status {
+		box-sizing: border-box;
+		width: 100%;
+		height: 200px;
+		float: left;
+		background-color: #dfdfdf;
+		margin-bottom: 10px;
+	}
+
+	#borosheds {
+		margin-top: 10px;
+		padding: 0px;
+		height: 150px;
+		width: 100%;
+		background-color: #fff;
+	}
+
+	#filingStatusChart {
+		margin-top: 10px;
+		padding: 0px;
+		height: 140px;
+		width: 100%;
+		background-color: #fff;
+	}
+
+	#subcycles {
+		margin-top: 10px;
+		padding: 0px;
+		height: 140px;
+		width: 100%;
+		background-color: #fff;
+	}
+
+	#pendInsp {
+		margin-top: 10px;
+		padding: 0px;
+		height: 170px;
+		width: 100%;
+		background-color: #fff;
+	}
+
+	#chart-cycles {
+		box-sizing: border-box;
+		width: 100%;
+		height: 200px;
+		< !-- border: 0.5px solid gray;
+		-->float: left;
+		background-color: #dfdfdf;
+		< !-- margin: 0px 0px 12px;
+		-->
+	}
+
+	#chart-pend {
+		box-sizing: border-box;
+		width: 100%;
+		height: 230px;
+		< !-- border: 0.5px solid gray;
+		-->float: left;
+		background-color: #dfdfdf;
+		< !-- margin: 0px 0px 12px;
+		-->
+	}
+
+	.summarytxt {
+		font-size: 20px;
+		font-weight: bold;
+		color: #7b7b7b;
+		font-family: 'Open Sans', sans-serif;
+		font-family: 'Roboto', sans-serif;
+		text-align: center;
+		line-height: 97%;
+		padding-top: 10px;
+	}
+
+	#summary1_sheds {
+		font-size: 35px;
+		font-weight: bold;
+		color: #7899b0;
+		font-family: 'Open Sans', sans-serif;
+		font-family: 'Roboto', sans-serif;
+		text-align: center;
+		line-height: 125%;
+
+	}
+
+
+	.ui {
+		top: 10px;
+		left: 10px;
+		padding: 8px;
+		position: absolute;
+		background: white;
+		background: rgba(255, 255, 255, 0.9);
+		border: 2px solid #707070;
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+		border-radius: 7px;
+		width: 240px;
+	}
+
+
+
+	/* The switch - the box around the slider */
+	.switch {
+		position: relative;
+		display: inline-block;
+		width: 32px;
+		height: 20px;
+	}
+
+	/* Hide default HTML checkbox */
+	.switch input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	/* The slider */
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		-webkit-transition: .4s;
+		transition: .4s;
+	}
+
+	.slider:before {
+		position: absolute;
+		content: "";
+		height: 12px;
+		width: 12px;
+		left: 4px;
+		bottom: 4px;
+		background-color: white;
+		-webkit-transition: .4s;
+		transition: .4s;
+	}
+
+	input:checked+#slider0_2 {
+		background-color: #59a14f;
+	}
+
+	input:focus+#slider0_2 {
+		box-shadow: 0 0 1px #59a14f;
+	}
+
+	input:checked+#slider2_5 {
+		background-color: #f28e2c;
+	}
+
+	input:focus+#slider2_5 {
+		box-shadow: 0 0 1px #f28e2c;
+	}
+
+	input:checked+#slider3_5 {
+		background-color: #b55a9d;
+	}
+
+	input:focus+#slider3_5 {
+		box-shadow: 0 0 1px #b55a9d;
+	}
+
+	input:checked+#slider6_16 {
+		background-color: #DF3B20;
+	}
+
+	input:focus+#slider6_16 {
+		box-shadow: 0 0 1px #DF3B20;
+	}
+
+	input:checked+#slider0_16 {
+		background-color: #5561ec;
+	}
+
+	input:focus+#slider0_16 {
+		box-shadow: 0 0 1px #5561ec;
+	}
+
+	input:checked+#sliderOther {
+		background-color: #999A9C;
+	}
+
+	input:focus+#sliderOther {
+		box-shadow: 0 0 1px #999A9C;
+	}
+
+	input:checked+#sliderCamp {
+		background-color: #999A9C;
+	}
+
+	input:focus+#sliderCamp {
+		box-shadow: 0 0 1px #999A9C;
+	}
+
+	input:checked+#sliderSchool {
+		background-color: #999A9C;
+	}
+
+	input:focus+#sliderSchool {
+		box-shadow: 0 0 1px #999A9C;
+	}
+
+	input:checked+#sliderPreschool {
+		background-color: #999A9C;
+	}
+
+	input:focus+#sliderPreschool {
+		box-shadow: 0 0 1px #999A9C;
+	}
+
+	input:checked+#sliderInfant {
+		background-color: #999A9C;
+	}
+
+	input:focus+#sliderInfant {
+		box-shadow: 0 0 1px #999A9C;
+	}
+
+	input:checked+.slider:before {
+		-webkit-transform: translateX(12px);
+		-ms-transform: translateX(12px);
+		transform: translateX(12px);
+	}
+
+	#sliderTxt {
+		line-height: 12px;
+		vertical-align: middle;
+	}
+</style>
+
+<body>
+
+	<div class="container-fluid dobmain" style="margin-top:20px;">
+		<div class="row">
+			<div class="col-lg-12" style="height:96vh">
+				<div class="chart-stage" id="map-container" style="border:1px solid black;height:100%;width:100%">
+					<div id="map">
+						<svg></svg>
+						<div id="ui-container" class="ui" style="z-index: 401">
+							<h5><b>CHILDCARE CENTERS IN NYC</b></h5>
+							<h6>(TOOGLE TO SELECT)</h6>
+							<h5>AGE RANGE: </h5>
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chk0_2">
+									<span class="slider" id="slider0_2"></span>
+								</label>
+
+								<span class="en" id="sliderTxt">0 - 2 YEARS</span>
+							</span>
+							<br />
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chk2_5">
+									<span class="slider" id="slider2_5"></span>
+								</label>
+								<span class="en" id="sliderTxt">2 - 5 YEARS</span>
+							</span>
+							<br />
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chk3_5">
+									<span class="slider" id="slider3_5"></span>
+								</label>
+								<span class="en" id="sliderTxt">3 - 5 YEARS</span>
+							</span>
+							<br />
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chk6_16">
+									<span class="slider" id="slider6_16"></span>
+								</label>
+								<span class="en" id="sliderTxt">6 - 16 YEARS</span>
+							</span>
+							<br />
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chk0_16">
+									<span class="slider" id="slider0_16"></span>
+								</label>
+								<span class="en" id="sliderTxt">0 - 16 YEARS</span>
+							</span>
+							
+							<h5>CENTER TYPE: </h5>
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chkCamp">
+									<span class="slider" id="sliderCamp"></span>
+								</label>
+
+								<span class="en" id="sliderTxt">Camps</span>
+							</span>
+							
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chkSchool">
+									<span class="slider" id="sliderSchool"></span>
+								</label>
+								<span class="en" id="sliderTxt">School</span>
+							</span>
+							
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chkPreschool">
+									<span class="slider" id="sliderPreschool"></span>
+								</label>
+								<span class="en" id="sliderTxt">Preschool</span>
+							</span>
+							
+
+							<span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" checked="true" id="chkInfant">
+									<span class="slider" id="sliderInfant"></span>
+								</label>
+								<span class="en" id="sliderTxt">Toddler/Infant</span>
+							</span>
+							
+
+							<!-- <span style="display:inline-block;">
+								<label class="switch">
+									<input type="checkbox" id="chkOther">
+									<span class="slider" id="sliderOther"></span>
+								</label>
+								<span class="en" id="sliderTxt">Other Complaints</span>
+							</span> -->
+							<br />
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		
+		
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/d3-format@3"></script>
+	<script src="../../Leaflet.D3SvgOverlay-master/L.D3SvgOverlay.min.js"></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/v/dt/dt-1.10.12/r-2.1.0/se-1.2.0/datatables.min.js" type="text/javascript"
+		charset="utf8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+	<script src="../../build/nv.d3.js"></script>
+	<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+	<script type="text/javascript" src="../../keen/keen.min.js"></script>
+	<script type="text/javascript"
+		src="https://cdn.datatables.net/rowgroup/1.1.1/js/dataTables.rowGroup.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.20/api/fnSortNeutral.js"></script>
+
+	<script>
+
+		$(document).ready(function () {
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth() + 1;
+			var yyyy = today.getFullYear();
+			today = mm + '/' + dd + '/' + yyyy;
+			d3.select("#today").html(today);
+			var latlong = [];
+			var selection = [];
+			var formatDate = d3.time.format("%-m/%-d/%Y").parse;
+			var numberFormat = d3.format(",.0f");
+			var legendNumFormat = d3.format(",");
+			var indexBasePreschool = 1;
+			var indexBaseInfant = 2;
+			var indexBaseCamp = 3;
+			var indexBaseSchool = 4;
+			var indexBase2_5 = 5;
+			var indexBase0_2 = 6;
+			var indexBase0_16 = 7;
+			var indexBase3_5 = 8;
+			var indexBase6_16 = 9;
+			var preschool;
+			var infant;
+			var camp;
+			var school;
+			var s2_5;
+			var s0_2;
+			var s0_16;
+			var s3_5;
+			var s6_16;
+			var index = 0b1111111111111;
+			var ageRangeChk = new Set(['2 YEARS - 5 YEARS','0 YEARS - 2 YEARS', '0 YEARS - 16 YEARS','3 YEARS - 5 YEARS','6 YEARS - 16 YEARS']);
+			var childcareTypeChk = new Set(['Child Care - Pre School','Child Care - Infants/Toddlers','Camp','School Based Child Care']);
+			
+			L.Control.include({
+				_refocusOnMap: L.Util.falseFn // Do nothing.
+			});
+			L.Control.prototype._refocusOnMap = function _refocusOnMap(ev) {
+				// if map exists and event is not a keyboard event
+				if (this._map && ev && ev.screenX > 0 && ev.screenY > 0) {
+					this._map.getContainer().focus({ preventScroll: true });
+				}
+			};
+			
+			var map = L.map('map', {
+				dragging: true,
+				scrollWheelZoom: false,
+				zoomControl: false
+			}).setView([40.72215448921957, -73.98636810864006], 11);
+
+			L.control.zoom({
+				position: 'topright'
+			}).addTo(map);
+			
+			L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
+				maxZoom: 20,
+				subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+			}).addTo(map);
+
+
+			var tooltipFacades = d3.select('#map').append('div')//var tooltip = d3.select('body').append('div')
+				.on('mouseover', function (d, i) {
+					tooltipFacades.transition().duration(0);
+				})
+				.on('mouseout', function (d, i) {
+					tooltipFacades.transition().delay(500).style('visibility', 'hidden');
+				})
+				.attr('class', 'tooltipFacades');
+
+
+
+			var width = $("#map").width(),
+				height = $("#map").height(),
+				points = [],
+				table_map = [],
+				filteredData,
+				latLngs = [],
+				pointsOverlayCenter,
+				legendShed,
+				legendCD,
+				cat,
+				cdSheds,
+				sheds_CD,
+				previousColor,
+				radius;
+
+			onload = ready();
+
+
+			function ready() {
+
+				pointsOverlayCenter = L.d3SvgOverlay(function (sel, proj) {
+					var pointUpdCenter = sel.selectAll('circle').data(points);
+
+					function pendVal(pend) {
+						if (pend == 'Y') {
+							return 'TRUE'
+						} else {
+							return 'FALSE'
+						}
+					}
+					pointUpdCenter.enter()
+						.append('circle')
+						.attr('cx', function (d) { return proj.latLngToLayerPoint(d.latLng).x; })
+						.attr('cy', function (d) { return proj.latLngToLayerPoint(d.latLng).y; })
+						.attr('class', function (d) {
+							
+							if(d.ageRange == '0 YEARS - 2 YEARS'){
+								return 'point0_2';
+								
+							} else if (d.ageRange == '2 YEARS - 5 YEARS'){
+								return 'point2_5';
+								
+							} else if (d.ageRange == '3 YEARS - 5 YEARS'){
+								return 'point3_5';
+								
+							} else if (d.ageRange == '6 YEARS - 16 YEARS'){
+								return 'point6_16';
+								
+							} else if (d.ageRange == '0 YEARS - 16 YEARS'){
+								return 'point0_16';
+								
+							}
+						
+							/*
+							if((d.localIndex&32) == 32){
+								return 'point0_2';
+								
+							} else if ((d.localIndex&0b10000) == 0b10000){
+								return 'point2_5';
+								
+							} else if ((d.localIndex&0b10000000) == 0b10000000){
+								return 'point3_5';
+								
+							} else if ((d.localIndex&0b100000000) == 0b100000000){
+								return 'point6_16';
+								
+							} else if ((d.localIndex&0b1000000) == 0b1000000){
+								return 'point0_16';
+								
+							}
+							*/
+						//	switch (d.ageRange) {
+							//	case '0 YEARS - 2 YEARS':
+							//		return 'point0_2';
+							//		break;
+							//	case '2 YEARS - 5 YEARS':
+							//		return 'point2_5';
+							//		break;
+							//	case '3 YEARS - 5 YEARS':
+							//		return 'point3_5';
+							//		break;
+							//	case '6 YEARS - 16 YEARS':
+							//		return 'point6_16';
+							//		break;
+							//	case '0 YEARS - 16 YEARS':
+							//		return 'point0_16';
+							//		break;
+								
+						//	}
+						})
+
+						.on('click', function (d) {
+
+							if (d3.select(this).style("fill-opacity") != 0) {
+								tooltipFacades.style("visibility", "visible");
+								tooltipFacades.html(
+									'CENTER NAME: ' + d.name + '</br>' +
+									'WEB SITE : <a href="https://'+ d.link + '" target="_blank">' + d.link +'</a></br>'+
+							//		'WEB SITE (if any): ' + d.link + '</br>' + 
+							//		'PHONE: ' + d.phone + '</br>' +
+									'PHONE : <a href="tel:'+ d.phone + '">' + d.phone +'</a></br>'+
+									'ADDRESS: ' + d.address + '</br>' +
+									'COMMUNITY BOARD: ' + (d.communityBoard).toUpperCase() + '</br>' +
+									'AGE RANGE: ' + d.ageRange + '</br>' +
+									'PROGRAM TYPE: ' + d.programType + '</br>' +
+									'CHILD CARE TYPE: ' + d.childCareType + '</br>' +
+									'TOTAL WORKERS: ' + d.worker + '</br>' +
+									'VIOLATION RATE: ' + d.violationRate + '</br>' +
+									'CRITICAL VIOLATION RATE: ' + d.criticalRate + '</br>'+
+									'PUBLIC HEALTH HAZARD VIOLATION RATE: ' + d.publicRate + '</br>'+
+									'local: ' + Number(d.localIndex).toString(2)
+									)
+								if (d3.event.pageX > (width - 200)) {
+									tooltipFacades.style("left", (d3.event.pageX - 350) + "px");
+								} else {
+									tooltipFacades.style("left", (d3.event.pageX + 20) + "px")
+										.style("top", (d3.event.pageY - 30) + "px");
+								}
+								if (d3.event.pageY > (height - 130)) {
+									tooltipFacades.style("top", (d3.event.pageY - 100) + "px");
+								} else {
+									tooltipFacades.style("top", (d3.event.pageY - 30) + "px");
+								}
+							}
+
+						})
+						.on("mouseover", function (d, i) {
+							previousColor = d3.select(this).style("fill");
+							tooltipFacades.transition().duration(0);
+							$(this).attr("style", "cursor: pointer; fill: #eef442; fill-opacity: 0.7;");
+						})
+						.on("mouseout", function (d, i) {
+							d3.select(this).style("fill", previousColor);
+							d3.select(this).style("fill-opacity", 0.7);
+							return tooltipFacades.transition().delay(500).style("visibility", "hidden");
+						});
+
+					pointUpdCenter.attr("stroke-width", 1 / proj.scale);
+					pointUpdCenter.attr("r", 5 / proj.scale);
+
+
+
+					var s0_2Slider = document.querySelector('input[id="chk0_2"]');
+					s2_5Slider = document.querySelector('input[id="chk2_5"]');
+					s3_5Slider = document.querySelector('input[id="chk3_5"]');
+					s6_16Slider = document.querySelector('input[id="chk6_16"]');
+					s0_16Slider = document.querySelector('input[id="chk0_16"]');
+					sliderCamp = document.querySelector('input[id="chkCamp"]');
+					sliderSchool = document.querySelector('input[id="chkSchool"]');
+					sliderPreschool = document.querySelector('input[id="chkPreschool"]');
+					sliderInfant = document.querySelector('input[id="chkInfant"]');
+
+
+				//	otherSlider = document.querySelector('input[id="chkOther"]');
+
+				/*	s0_2Slider.onchange = function () {
+						if (this.checked) {
+							mask = 1<< (indexBase0_2 - 1);
+							index |= mask;
+							d3.selectAll(".point0_2").filter(function (d) {
+								return ((mask)&d.localIndex) == mask;
+								
+							})
+								.style("display", "block");
+						} else {
+							mask = ~(1 << indexBase0_2-1);
+							index &= mask;
+							d3.selectAll(".point0_2").filter(function (d) {
+								return ((~mask)&d.localIndex ) == (~mask);
+							})
+								.style("display", "none");
+						}
+					};
+					*/
+					s0_2Slider.onchange = function () {
+						if (this.checked) {
+							mask = 1<< (indexBase0_2 - 1);
+							index |= mask;
+							ageRangeChk.add('0 YEARS - 2 YEARS');
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '0 YEARS - 2 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+								
+							})
+								.style("display", "block");
+						} else {
+							mask = ~(1 << indexBase0_2-1);
+							index &= mask;
+							ageRangeChk.delete('0 YEARS - 2 YEARS');
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 2 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "none");
+						}
+					};
+
+					s2_5Slider.onchange = function () {
+						if (this.checked) {
+							
+							mask = 1<< (indexBase2_5 - 1);
+							index |= mask;
+							ageRangeChk.add('2 YEARS - 5 YEARS');
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '2 YEARS - 5 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+
+						} else {
+							
+							mask = ~(1 << indexBase2_5-1);
+							index &= mask;
+							ageRangeChk.delete('2 YEARS - 5 YEARS');
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (d.ageRange == '2 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "none");
+
+						}
+					};
+
+					s3_5Slider.onchange = function () {
+						if (this.checked) {
+							mask = 1<< (indexBase3_5 - 1);
+							index |= mask;
+							ageRangeChk.add('3 YEARS - 5 YEARS');
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '3 YEARS - 5 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+
+						} else {
+							mask = ~(1 << indexBase3_5-1);
+							index &= mask;
+							ageRangeChk.delete('3 YEARS - 5 YEARS');
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (d.ageRange == '3 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "none");
+
+						}
+					};
+
+					s6_16Slider.onchange = function () {
+						if (this.checked) {
+							mask = 1<< (indexBase6_16 - 1);
+							index |= mask;
+							ageRangeChk.add('6 YEARS - 16 YEARS');
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '6 YEARS - 16 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+
+						} else {
+							mask = ~(1 << indexBase6_16-1);
+							index &= mask;
+							ageRangeChk.delete('6 YEARS - 16 YEARS');
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (d.ageRange == '6 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "none");
+
+						}
+					};
+
+					s0_16Slider.onchange = function () {
+						if (this.checked) {
+							mask = 1<< (indexBase0_16 - 1);
+							index |= mask;
+							ageRangeChk.add('0 YEARS - 16 YEARS');
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '0 YEARS - 16 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+
+						} else {
+							mask = ~(1 << indexBase0_16-1);
+							index &= mask;
+							ageRangeChk.delete('0 YEARS - 16 YEARS');
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "none");
+
+						}
+					};
+
+					sliderCamp.onchange = function () {
+						
+						
+						if (this.checked) {
+							mask = 1<< (indexBaseCamp - 1);
+							index |= mask;
+							childcareTypeChk.add('Camp');
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '0 YEARS - 2 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '2 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '6 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '0 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '3 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");				
+									
+
+						} else {
+							
+							mask = ~(1 << indexBaseCamp-1);
+							index &= mask;
+							childcareTypeChk.delete('Camp');
+							
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 2 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (d.ageRange == '2 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (d.ageRange == '6 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (d.ageRange == '3 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");				
+									
+						}
+					};
+
+					sliderSchool.onchange = function () {
+						
+						
+						if (this.checked) {
+							mask = 1<< (indexBaseCamp - 1);
+							index |= mask;
+							childcareTypeChk.add('School Based Child Care');
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '0 YEARS - 2 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '2 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '6 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '0 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '3 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");				
+									
+
+						} else {
+							
+							mask = ~(1 << indexBaseCamp-1);
+							index &= mask;
+							childcareTypeChk.delete('School Based Child Care');
+							
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 2 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (d.ageRange == '2 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (d.ageRange == '6 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (d.ageRange == '3 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");				
+									
+						}
+					};
+
+					sliderPreschool.onchange = function () {
+						
+						
+						if (this.checked) {
+							mask = 1<< (indexBaseCamp - 1);
+							index |= mask;
+							childcareTypeChk.add('Child Care - Pre School');
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '0 YEARS - 2 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '2 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '6 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '0 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '3 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");				
+									
+
+						} else {
+							
+							mask = ~(1 << indexBaseCamp-1);
+							index &= mask;
+							childcareTypeChk.delete('Child Care - Pre School');
+							
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 2 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (d.ageRange == '2 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (d.ageRange == '6 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (d.ageRange == '3 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");				
+									
+						}
+					};
+
+					sliderInfant.onchange = function () {
+						
+						
+						if (this.checked) {
+							mask = 1<< (indexBaseCamp - 1);
+							index |= mask;
+							childcareTypeChk.add('Child Care - Infants/Toddlers');
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+										(d.ageRange == '0 YEARS - 2 YEARS') &&
+										childcareTypeChk.has(d.childCareType));
+							})
+								.style("display", "block");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '2 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '6 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+								.style("display", "block");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '0 YEARS - 16 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (ageRangeChk.has(d.ageRange) &&
+								d.ageRange == '3 YEARS - 5 YEARS' &&
+								(childcareTypeChk.has(d.childCareType)))
+							})
+									.style("display", "block");				
+									
+
+						} else {
+							
+							mask = ~(1 << indexBaseCamp-1);
+							index &= mask;
+							childcareTypeChk.delete('Child Care - Infants/Toddlers');
+							
+							d3.selectAll(".point0_2").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 2 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+							
+							d3.selectAll(".point2_5").filter(function (d) {
+								return (d.ageRange == '2 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point6_16").filter(function (d) {
+								return (d.ageRange == '6 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+								.style("display", "none");
+
+							d3.selectAll(".point0_16").filter(function (d) {
+								return (d.ageRange == '0 YEARS - 16 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");		
+
+							d3.selectAll(".point3_5").filter(function (d) {
+								return (d.ageRange == '3 YEARS - 5 YEARS' &&
+								(!(childcareTypeChk.has(d.childCareType))))
+							})
+									.style("display", "none");				
+									
+						}
+					};
+
+				//	otherSlider.onchange = function () {
+				//		if (this.checked) {
+				//			d3.selectAll(".pointOther").filter(function (d) {
+				//				return d.ageRange == "Other";
+				//			})
+				//				.style("display", "block");
+
+				//		} else {
+				//			d3.selectAll(".pointOther").filter(function (d) {
+				//				return d.ageRange == "Other";
+				//			})
+				//				.style("display", "none");
+
+				//		}
+				//	};
+
+
+				});
+
+				d3.csv("https://raw.githubusercontent.com/data-go-deep/KidsCareScape/refs/heads/gh-pages/data_dc/DOHMH_Childcare_Center.csv", function (data) {
+					points = data.filter(function (d) {
+						if (((+d["latitude"] != 0) && (+d["longitude"] != 0))) {
+							
+							return d;
+						}
+					}).map(function (d) {
+						d.latLng = [+d["latitude"], +d["longitude"]];
+						d.name = d["Center Name"];
+						d.address = d["address"];
+						d.Borough = d["borough"];
+						d.communityBoard = d["cb"];
+						d.ageRange = d["Age Range"];
+						d.worker = d["Total Educational Workers"];
+						d.violationRate = d["Violation Rate Percent"] == ""?"":d["Violation Rate Percent"]+"%";
+						d.programType = d["Program Type"];
+						d.childCareType = d["Child Care Type"];
+						d.criticalRate = d["Critical Violation Rate"] == ""?"":d["Critical Violation Rate"]+"%";
+						d.publicRate = d["Public Health Hazard Violation Rate"] == ""?"":d["Public Health Hazard Violation Rate"]+"%";
+						d.link = d["URL"];
+						d.phone = d["Phone"];
+						d.localIndex = Number(d["index"]);
+
+						return d;
+					});
+
+					pointsOverlayCenter.addTo(map);
+
+					d3.selectAll(".point0_2").style("display", "block");
+					d3.selectAll(".point2_5").style("display", "block");
+					d3.selectAll(".point3_5").style("display", "block");
+					d3.selectAll(".point6_16").style("display", "block");
+					d3.selectAll(".point0_16").style("display", "block");
+					d3.selectAll(".pointOther").style("display", "none");
+
+
+
+
+					//CHARTS
+
+					//TOTAL FACADE FILINGS
+					var totalSheds = points.map(function (d) { return d.controlNum });
+					console.log(totalSheds);
+					d3.select("#summary1_sheds").html(numberFormat(totalSheds.length));
+
+					//BOROUGH			
+					var nestBoroSheds = d3.nest()
+						.key(function (d) { return d.Borough; })//.sortKeys(d3.ascending)
+						.rollup(function (v) {
+							return v.length;
+						})
+						.entries(points)
+						.sort(function (a, b) { return d3.descending(a.values, b.values); })
+					console.log(nestBoroSheds);
+					shedBoroChart(nestBoroSheds);
+
+					//CURRENT STATUS			
+					var nestFilingStatus = d3.nest()
+						.key(function (d) { return (d.filingStatus).toUpperCase(); })//.sortKeys(d3.ascending)
+						.rollup(function (v) {
+							return v.length;
+						})
+						.entries(points)
+						.sort(function (a, b) { return d3.descending(a.values, b.values); })
+					console.log(nestFilingStatus);
+					statusChart(nestFilingStatus);
+
+
+					//SUB CYCLES
+					var nestCycles = d3.nest()
+						.key(function (d) { return d.cycle; })
+						.rollup(function (v) {
+							return v.length;
+						})
+						.entries(points)
+						.sort(function (a, b) { return d3.descending(a.values, b.values); })//.slice(0,5);	
+					console.log(nestCycles);
+					cycleChart(nestCycles);
+
+
+					//PENDING INSPECTIONS
+					var nestPending = d3.nest()
+						.key(function (d) {
+							if (d.pending == 'Y') {
+								return 'TRUE'
+							} else {
+								return 'FALSE'
+							}
+						})
+						.rollup(function (v) {
+							return v.length;
+						})
+						.entries(points)
+						.sort(function (a, b) { return d3.descending(a.values, b.values); })//.slice(0,5);	
+					console.log(nestPending);
+					pendChart(nestPending);
+
+
+					function shedBoroChart(data) {
+						var shedBoroData = [
+							{
+								key: "totals",
+								values: []
+							}
+						];
+
+						// populate the empty object with your data
+						data.forEach(function (d) {
+							d.values = +d.values
+							shedBoroData[0].values.push(d)
+						})
+
+
+						nv.addGraph(function () {
+							var chart = nv.models.discreteBarChart()
+								.x(function (d) {
+									return d.key
+								})
+								.y(function (d) {
+									return d.values
+								})
+								.duration(250)
+								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
+								.color(['#7899b0']);
+							chart.yAxis.tickFormat(d3.format(','));
+
+							chart.xAxis.tickFormat(function (d) {
+								if (typeof this != 'undefined') {
+									var el = d3.select(this);
+									var p = d3.select(this.parentNode);
+									p.append("foreignObject")
+										.attr('x', -100)
+										.attr("width", 200)
+										.attr("height", 200)
+										.append("xhtml:p")
+										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif;')
+										.html(d);
+									el.remove();
+									return d;
+								}
+							});
+
+							d3.select('#chart-boro-facades svg')
+								.datum(shedBoroData)
+								.transition().duration(250)
+								.call(chart);
+							nv.utils.windowResize(chart.update);
+							return chart;
+						});
+					}
+
+					function statusChart(data) {
+						var statusData = [
+							{
+								key: "totals",
+								values: []
+							}
+						];
+
+						// populate the empty object with your data
+						data.forEach(function (d) {
+							d.values = +d.values
+							statusData[0].values.push(d)
+						})
+
+
+						nv.addGraph(function () {
+							var chart = nv.models.discreteBarChart()
+								.x(function (d) {
+									return d.key
+								})
+								.y(function (d) {
+									return d.values
+								})
+								.duration(250)
+								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
+								.color(['#7899b0']);
+							chart.yAxis.tickFormat(d3.format(','));
+
+							chart.xAxis.tickFormat(function (d) {
+								if (typeof this != 'undefined') {
+									var el = d3.select(this);
+									var p = d3.select(this.parentNode);
+									p.append("foreignObject")
+										.attr('x', -100)
+										.attr("width", 200)
+										.attr("height", 200)
+										.append("xhtml:p")
+										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif;')
+										.html(d);
+									el.remove();
+									return d;
+								}
+							});
+
+							d3.select('#chart-status svg')
+								.datum(statusData)
+								.transition().duration(250)
+								.call(chart);
+							nv.utils.windowResize(chart.update);
+							return chart;
+						});
+					}
+
+					function cycleChart(data) {
+						var shedCDData = [
+							{
+								key: "totals",
+								values: []
+							}
+						];
+
+						// populate the empty object with your data
+						data.forEach(function (d) {
+							d.values = +d.values
+							shedCDData[0].values.push(d)
+						})
+
+
+						nv.addGraph(function () {
+							var chart = nv.models.discreteBarChart()
+								.x(function (d) {
+									return d.key
+								})
+								.y(function (d) {
+									return d.values
+								})
+								.duration(250)
+								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
+								.color(['#7899b0']);
+							chart.yAxis.tickFormat(d3.format(','));
+
+							chart.xAxis.tickFormat(function (d) {
+								if (typeof this != 'undefined') {
+									var el = d3.select(this);
+									var p = d3.select(this.parentNode);
+									p.append("foreignObject")
+										.attr('x', -100)
+										.attr("width", 200)
+										.attr("height", 200)
+										.append("xhtml:p")
+										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif;')
+										.html(d);
+									el.remove();
+									return d;
+								}
+							});
+
+							d3.select('#subcycles')
+								.datum(shedCDData)
+								.transition().duration(250)
+								.call(chart);
+							nv.utils.windowResize(chart.update);
+							return chart;
+						});
+					}
+
+					function pendChart(data) {
+						var pendData = [
+							{
+								key: "totals",
+								values: []
+							}
+						];
+
+						// populate the empty object with your data
+						data.forEach(function (d) {
+							d.values = +d.values
+							pendData[0].values.push(d)
+						})
+
+						nv.addGraph(function () {
+							var chart = nv.models.discreteBarChart()
+								.x(function (d) {
+									return d.key
+								})
+								.y(function (d) {
+									return d.values
+								})
+								.duration(250)
+								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
+								.color(['#7899b0']);
+							chart.yAxis.tickFormat(d3.format(','));
+
+							chart.xAxis.axisLabelDistance(10);
+							chart.xAxis.tickFormat(function (d) {
+								if (typeof this != 'undefined') {
+									var el = d3.select(this);
+									var p = d3.select(this.parentNode);
+									p.append("foreignObject")
+										.attr('x', -100)
+										.attr("width", 200)
+										.attr("height", 200)
+										.append("xhtml:p")
+										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif; pointer-events: auto;')
+										.html(d);
+									el.remove();
+									return d;
+								}
+
+							});
+
+							d3.select('#pendInsp')
+								.datum(pendData)
+								.transition().duration(250)
+								.call(chart);
+							nv.utils.windowResize(chart.update);
+							return chart;
+						}
+						);
+
+					}
+
+				});
+
+
+			}
+
+
+		});
+
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<head>
+    <title>Complaints Backlog YR2022</title>
+    <link rel="stylesheet" href="data_backlog/style2.css" type="text/css" media="screen" />
+	
+		<style>
+			.legend {
+				font-size: 12px;
+			}
+			.floor {
+				  fill: #d6d6d6;
+			  }
+		</style>
+		
+		
+		
+	
+</head>
+
+
+<div id="rmain-wrapper">
+    
+<div id="metrics">
+    <div id="motor">
+        <!-- <h2 style="margin-top:5px; margin-left:15px; font-size:18px;">OPEN COMPLAINT BACKLOG (NO GRAFFITI) YR2022</h2> -->
+		<!-- <h2 style="font-size:16px; margin-left:15px; font-style: italic;">AVERAGE AGE (DAYS)</h2><br/> -->
+		<h4 style="font-size:14px; margin-left:15px;">CITYWIDE AVERAGE: <font color="#e21d1d"><span id="citiAvg"></span></font> DAYS</h4>
+		<h4 style="font-size:14px; margin-left:15px;">CITYWIDE TOTAL: <font color="#e21d1d"><span id="citiCount"></span></font> OPEN COMPLAINTS SINCE 2020</h4>
+		<h4 style="font-size:14px; margin-left:15px;">CD<font color="#e21d1d"><span id="maxCD"></span></font> HAS THE HIGHEST AVERAGE AGE (<font color="#e21d1d"><span id="maxAvg"></span></font>) </h4>
+		<h4 style="font-size:14px; margin-left:15px;">CD<font color="#e21d1d"><span id="maxCountCD"></span></font> HAS THE HIGHEST OPEN COMPLAINTS REMAINING (<font color="#e21d1d"><span id="maxCountVal"></span></font>) </h4>
+		<!-- <h4 style="font-size:14px; margin-left:15px;">DATA UPDATED ON <font color="#e21d1d"><span id="today"></span></font></h4> -->
+	
+		<!-- <h9>Choose to Compare Volume or Average Open Days</h9> -->
+        <!-- <ul> -->
+			<!-- <li data-metric="HC01_EST_VC04" class="selected HC01_EST_VC04">NB</li> -->
+			<!-- <li data-metric="HC01_EST_VC05" class="selected HC01_EST_VC05">ALT1</li> -->
+			<!-- <li data-metric="HC01_EST_VC10" class="selected HC01_EST_VC10">ALT2</li> -->
+			<!-- <li data-metric="HC01_EST_VC11" class="selected HC01_EST_VC11">ALT3</li> -->
+			<!-- <li data-metric="HC01_EST_VC12" class="selected HC01_EST_VC12">DM</li> -->
+			<!-- <li data-metric="HC01_EST_VC13" class="selected HC01_EST_VC13">SG</li> -->
+			<!-- <li data-metric="HC01_EST_VC14" class="selected HC01_EST_VC14">Total Permits</li> -->
+        <!-- </ul> -->
+ 
+
+
+		<ul>
+			<li data-metric="HC01_EST_VC04" class="selected HC01_EST_VC04">Average Days</li>
+			<li data-metric="HC01_EST_VC05">Volume</li>
+			<!-- <li data-metric="HC01_EST_VC10">Dirty Condition</li>
+			<li data-metric="HC01_EST_VC11">Illegal Dumping</li>
+			<li data-metric="HC01_EST_VC12">Graffiti</li>
+			<li data-metric="HC01_EST_VC13">Snow</li>
+			<li data-metric="HC01_EST_VC14">Obstruction</li>
+            <li data-metric="HC01_EST_VC15">Dead Animal</li>
+            <li data-metric="HC01_EST_VC16">Residential Disposal Complaint</li>
+            <li data-metric="HC01_EST_VC17">Other</li>
+            <li data-metric="HC01_EST_VC18">Total</li> -->
+        </ul>
+	</div>
+	<div id="main-wrapper">
+		<div class="clr"></div>
+</div>
+</div><!-- @end #metrics -->    
+		
+<div id="tooltip" class="tooltip">
+    <h3 class="name"></h3>
+    <div data-metric="HC01_EST_VC04" class="line">
+        <div class="HC01_EST_VC04 symbol"></div> Avg Open Days: 
+        <div class="HC01_EST_VC04_val val"></div>
+		<div class="HC01_EST_VC04_val moe"></div>
+    </div>
+    <div data-metric="HC01_EST_VC05" class="line">
+        <div class="HC01_EST_VC05 symbol"></div> # Open Complaints:
+		<div class="HC01_EST_VC05_val val"></div>
+        <div class="HC01_EST_VC05_val moe"></div>
+        
+    </div>
+    
+</div>   
+   
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/queue.v1.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://d3js.org/d3-format.v1.min.js"></script>
+
+<script>
+
+
+var width = window.innerWidth,
+    height = window.innerHeight;
+    console.log(width);
+    center = [width / 1.5, height / 3.1],
+    defaultFill = "#e0e0e0";
+
+var baseColors = { 
+    "HC01_EST_VC04": d3.scale.linear().domain([0,70]).range(["#ffffff", "#2E648C"]).interpolate(d3.interpolateLab),
+    "HC01_EST_VC05": d3.scale.linear().domain([0,120]).range(["#ffffff", "#bc80bd"]).interpolate(d3.interpolateLab),
+    
+};
+
+
+var commuteById = d3.map();
+
+var projection = d3.geo.mercator()
+    .scale(61000)
+	.center( [-73.85,40.71] )
+    .translate([width / 1.5, height / 3.1]);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", move);
+
+var svg = d3.select("body #main-wrapper").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .call(zoom);
+svg.on("wheel.zoom", null);
+svg.on("mousewheel.zoom", null);
+
+svg.append("rect")
+    .attr("class", "overlay")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("svg:image")
+    .attr("xlink:href", "../../images_dc/progress-anim.gif")
+    .attr("id", "progress-image")
+    .attr("width", 43)
+    .attr("height", 11)
+    .attr("x", width / 2)
+    .attr("y", height / 2);
+    
+var g = svg.append("g");
+
+    
+var tooltip = d3.select("#tooltip")
+ .attr("class", "tooltip")
+ .style("opacity", 0);
+
+//var CURR_SELECT = ["HC01_EST_VC04", "HC01_EST_VC05", "HC01_EST_VC10", "HC01_EST_VC11", "HC01_EST_VC12", "HC01_EST_VC13", "HC01_EST_VC14"];
+
+//Pre-select NB permit type in map
+var CURR_SELECT = ["HC01_EST_VC04"];
+
+queue()
+    .defer(d3.json, "../../data_dc/CD_topoJSON.json")
+    .defer(d3.csv, "data_backlog/data/complaintBackLog.csv", typeAndSet)
+    .await(ready);
+
+	data = d3.csv("data_backlog/data/complaintBackLog.csv", (data) => {
+		data.forEach(function(d) {
+		d.HC01_EST_VC04 = +d.HC01_EST_VC04;
+		d.HC01_EST_VC05 = +d.HC01_EST_VC05;
+		d.name = +d.name;
+		d.CD = +d.CD
+		// commuteById.set(d.FIPS, d);
+	});
+	var citiAvg = d3.mean(data, function(d) {
+		return d.HC01_EST_VC04;
+	});
+	var citiCount = d3.sum(data, function(d) {
+		return d.HC01_EST_VC05;
+	});
+	
+	var minAvg = d3.min(data, function(d) {
+		return d.HC01_EST_VC04;
+	});
+	var maxAvg = d3.max(data, function(d) { 
+		return d.HC01_EST_VC04; 
+	});
+
+	var maxCountVal = d3.max(data, function(d) { 
+		return d.HC01_EST_VC05; 
+	});
+
+	var maxCD = data.filter (function(d) {
+		if (d.HC01_EST_VC04 == maxAvg) {
+			return d.HC01_EST_VC04;
+		}
+	})[0].CD;
+	
+
+	var maxCountCD = data.filter (function(d) {
+		if (d.HC01_EST_VC05 == maxCountVal) {
+			return d.HC01_EST_VC05;
+		}
+	})[0].CD;
+	
+	d3.select("#citiAvg").html(d3.format(".1f")(citiAvg));
+	d3.select("#citiCount").html(citiCount);
+	d3.select("#maxAvg").html(maxAvg);
+	d3.select("#maxCD").html(maxCD);
+	d3.select("#maxCountCD").html(maxCountCD);
+	d3.select("#maxCountVal").html(maxCountVal);
+	});
+	
+
+	
+
+function ready(error, CD_topoJSON) {
+
+	
+
+    g.append("g")
+        .attr("class", "collection")
+        .selectAll("path")
+          .data(topojson.feature(CD_topoJSON, CD_topoJSON.objects.collection).features)
+        .enter().append("path")
+          // .attr("class", function(d) { return classByGreatest(d.id); })
+          .attr("d", path)
+          
+          .on("mouseover", function(d) {
+               d3.select(this).classed("selected", true);
+               tooltip.transition().duration(100)
+                 .style("opacity", 1)
+               if (d3.event.pageX > (width - 200)) {
+                   tooltip.style("left", (d3.event.pageX - 210) + "px");
+               } else {
+                   tooltip.style("left", (d3.event.pageX + 20) + "px")
+                        .style("top", (d3.event.pageY -30) + "px");
+               }
+               if (d3.event.pageY > (height - 150)) {
+                   tooltip.style("top", (d3.event.pageY -140) + "px");
+               } else {
+                   tooltip.style("top", (d3.event.pageY -30) + "px");
+               }
+               
+               tooltip.select(".name").text(commuteById.get(d.id)['name']);
+               tooltip.select(".HC01_EST_VC04_val.val").text(commuteById.get(d.id)["HC01_EST_VC04"])
+               tooltip.select(".HC01_EST_VC05_val.val").text(commuteById.get(d.id)["HC01_EST_VC05"])
+               
+               tooltip.select(".HC01_EST_VC05_val.moe").html(commuteById.get(d.id)["HC01_MOE_VC05"] + "%")
+               console.log(commuteById.get(d.id)["HC01_MOE_VC05"])
+            //    tooltip.select(".HC01_EST_VC18_val.moe").html(commuteById.get(d.id)["HC01_MOE_VC18"] + "%")
+               
+             })
+          .on("mouseout", function() {
+              d3.select(this).classed("selected", false);
+              tooltip.transition().duration(300)
+                .style("opacity", 0);
+              });
+
+   // g.append("path")
+        //.datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+        //.attr("class", "states")
+       // .attr("d", path);
+    
+    updateClasses();
+        
+    <!-- d3.selectAll("#metrics li") -->
+        <!-- .on("click", function() { -->
+            <!-- var item = d3.select(this); -->
+            <!-- if (item.classed("selected")) { -->
+                <!-- item.attr("class", ""); -->
+                <!-- removeFromArray(CURR_SELECT, item.attr("data-metric")); -->
+                
+            <!-- } else { -->
+                <!-- item.classed("selected " + item.attr("data-metric"), true); -->
+                <!-- CURR_SELECT.push(item.attr("data-metric")); -->
+            <!-- } -->
+            <!-- updateClasses(); -->
+        <!-- }); -->
+
+	d3.selectAll("#metrics li")
+        .on("click", function() {
+            var item = d3.select(this);
+            if (item.classed("selected")) {
+                item.attr("class", "");
+                removeFromArray(CURR_SELECT, item.attr("data-metric"));
+				
+            } else {
+				var removed = CURR_SELECT.splice(0,7);
+				d3.selectAll("#metrics li").attr("class", "");
+                item.classed("selected " + item.attr("data-metric"), true);
+				CURR_SELECT.push(item.attr("data-metric"));	
+            }
+            updateClasses();
+        });
+	
+	
+
+    
+	// Zoom buttons
+    // svg.selectAll(".button")
+    //     .data(['zoom_in', 'zoom_out'])
+    //   .enter()
+    //     .append("g")
+    //       .attr("id", function(d){return d})
+    //       .attr("class", "button")
+    //       .attr({x: 20, width: 20, height: 20})
+    //     .append("rect")
+    //         .attr("y", function(d,i) { return 20 + 25*i })
+    //         .attr({x: 20, width: 20, height: 20})
+    // // Plus button
+    // svg.select("#zoom_in")
+    //   .append("line")
+    //     .attr({x1: 25, y1: 30, x2: 35, y2: 30 })
+    //     .attr("stroke", "#fff")
+    //     .attr("stroke-width", "2px");
+    // svg.select("#zoom_in")
+    //   .append("line")
+    //     .attr({x1: 30, y1: 25, x2: 30, y2: 35 })
+    //     .attr("stroke", "#fff")
+    //     .attr("stroke-width", "2px");
+    // // Minus button
+    // svg.select("#zoom_out")
+    //   .append("line")
+    //     .attr({x1: 25, y1: 55, x2: 35, y2: 55 })
+    //     .attr("stroke", "#fff")
+    //     .attr("stroke-width", "2px");
+
+
+    svg.selectAll(".button")
+      .on("click", function() {
+          d3.event.preventDefault();
+          
+          var scale = zoom.scale(),
+              extent = zoom.scaleExtent(),
+              translate = zoom.translate(),
+              x = translate[0], y = translate[1],
+              factor = (this.id === 'zoom_in') ? 2 : 1/2,
+              target_scale = scale * factor;
+          
+          var clamped_target_scale = Math.max(extent[0], Math.min(extent[1], target_scale));
+            if (clamped_target_scale != target_scale){
+                target_scale = clamped_target_scale;
+                factor = target_scale / scale;
+            }
+
+            // Center each vector, stretch, then put back
+            x = (x - center[0]) * factor + center[0];
+            y = (y - center[1]) * factor + center[1];
+            
+            // Transition to the new view over 350ms
+            d3.transition().duration(350).tween("zoom", function () {
+                var interpolate_scale = d3.interpolate(scale, target_scale),
+                    interpolate_trans = d3.interpolate(translate, [x,y]);
+                return function (t) {
+                    zoom.scale(interpolate_scale(t))
+                        .translate(interpolate_trans(t));
+                    svg.call(zoom.event);
+                };
+            });
+      });
+      
+      svg.select("#progress-image").remove();
+}
+    
+  
+function typeAndSet(d) {
+    
+    d.HC01_EST_VC04 = +d.HC01_EST_VC04;
+    d.HC01_EST_VC05 = +d.HC01_EST_VC05;
+    
+    d.HC01_MOE_VC05 = +d.HC01_MOE_VC05;
+    
+    commuteById.set(d.FIPS, d);
+    
+}
+
+function updateClasses() {
+    if (CURR_SELECT.length > 0) {
+        svg.selectAll(".collection path")
+            .attr("fill", function(d) { return colorByGreatest(d.id) });
+          // .attr("class", function(d) { return classByGreatest(d.id); })
+          // .attr("opacity", function(d) { return opacityByGreatest(d.id); });
+    } else {
+        svg.selectAll(".collection path")
+          .attr("class", "")
+          .attr("fill", defaultFill);
+    }
+
+}
+
+function colorByGreatest(FIPS) {
+    
+    var countyObject = commuteById.get(FIPS);
+
+    if (typeof countyObject !== "undefined") {
+        var values = [];
+        for (var i = 0; i < CURR_SELECT.length; i++) {
+            values.push(countyObject[CURR_SELECT[i]]);
+        }
+        var maxValue = d3.max(values);
+        var maxIndex = values.indexOf(maxValue);
+        var metric = CURR_SELECT[maxIndex];
+        return baseColors[metric](maxValue);
+    } 
+    
+    else {
+        return "#ffffff";
+    }
+    
+}
+
+
+// function classByGreatest(FIPS) {
+//     var countyObject = commuteById.get(FIPS);
+// 
+//     if (typeof countyObject !== "undefined") {
+//         var values = [];
+//         for (var i = 0; i < CURR_SELECT.length; i++) {
+//             values.push(countyObject[CURR_SELECT[i]]);
+//         }
+//         var maxIndex = values.indexOf(d3.max(values));
+//         return CURR_SELECT[maxIndex];
+//     } 
+//     
+//     else {
+//         return "NODATA";
+//     }
+// }
+
+// function opacityByGreatest(FIPS) {
+//     var countyObject = commuteById.get(FIPS);
+// 
+//     if (typeof countyObject !== "undefined") {
+//         var values = [];
+//         for (var i = 0; i < CURR_SELECT.length; i++) {
+//             values.push(countyObject[CURR_SELECT[i]]);
+//         }
+//         return opacityScale(d3.max(values));
+//     } 
+//     
+//     else {
+//         return 0;
+//     }
+// }
+
+function zoomIn() {
+    zoom.scale(zoom.scale()*2);
+    move();
+}
+
+function move() {
+  var t = d3.event.translate,
+      s = d3.event.scale;
+  t[0] = Math.min(width * (s - 1), Math.max(width * (1 - s), t[0]));
+  t[1] = Math.min(height * (s - 1), Math.max(height * (1 - s), t[1]));
+  zoom.translate(t);
+  g.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")scale(" + s + ")");
+}
+
+function clicked(d) {
+  var x, y, k;
+
+  if (d && centered !== d) {
+    var centroid = path.centroid(d);
+    x = centroid[0];
+    y = centroid[1];
+    k = 4;
+    centered = d;
+  } else {
+    x = width / 2;
+    y = height / 2;
+    k = 1;
+    centered = null;
+  }
+
+  g.selectAll("path")
+      .classed("active", centered && function(d) { return d === centered; });
+
+  g.transition()
+      .duration(750)
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+      .style("stroke-width", 1.5 / k + "px");
+}
+
+
+
+function removeFromArray(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+            arr.splice(ax, 1);
+        }
+    }
+    return arr;
+}
+
+
+
+d3.select(self.frameElement).style("height", height + "px");
+
+</script>

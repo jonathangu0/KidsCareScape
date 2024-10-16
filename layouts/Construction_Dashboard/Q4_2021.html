@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NYC Construction Dashboard</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <!-- <link rel="stylesheet" type="text/css" href="../../assets/lib/bootstrap/dist/css/bootstrap.min.css" /> -->
+	<link rel="stylesheet" type="text/css" href="https://nycdob.github.io/DOB_Dashboards/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <!-- <link rel="stylesheet" type="text/css" href="../../assets/css/keen-dashboards.css" /> -->
+	<link rel="stylesheet" type="text/css" href="https://nycdob.github.io/DOB_Dashboards/assets/css/keen-dashboards.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<style>
+	.navbar-brand-heading {
+		font-size: 28px;
+		font-weight: bold;
+		color: white;		
+	}
+	div.navbar-collapse ul.navbar-nav li.c2 a {
+		color: #8A8A8A;
+	}
+		div.navbar-collapse ul.navbar-nav li.c2 a:hover{
+		color: white;
+	}
+	.chart-waffle {
+		width: 100%;
+		height: 220px;
+		padding: 0;
+		overflow-y: hidden;
+		overflow-x: auto;
+	}
+	.chart-map {
+		width: 100%;
+		height: 640px;
+		padding: 5px 25px 5px;
+		overflow-y: hidden;
+		overflow-x: auto;
+		position: relative;
+	}
+	.dev-table {
+		width: 100%;
+		height: 500px;
+		padding: 0;
+		overflow-y: auto;
+		overflow-x: auto;
+	}
+	#sub_nav {
+		background-color: rgba(222,115,0,.6);
+		border-color: rgb(222,115,0);
+	}
+	#sub_nav .navbar-brand {
+		color: black;
+	}
+</style>
+
+
+<body class="application">
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-brand-heading">
+		<a class="navbar-brand" style="font-size:26px">NYC Construction Dashboard</a>
+      </div>
+	  <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+			<li class="c2"><a href="https://nycdob.github.io/DOB_Dashboards/layouts/Construction_Dashboard/Annual_2021.html">2021 Construction Dashboard</a></li>
+			<li class="c2"><a href="https://nycdob.github.io/DOB_Dashboards/layouts/Construction_Dashboard/Annual_2020.html">2020 Construction Dashboard</a></li>
+        		
+	</ul>
+      </div>
+
+    </div>
+  </div>
+  
+  
+  
+  
+
+<div class="container-fluid">
+  <div id="sub_nav" class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-brand">
+
+		QUARTER 4, 2021
+      </div>
+
+    </div>
+  </div>
+  
+  	<div class="row">
+		<div class="col-sm-6 col-md-4">
+			<div class="chart-wrapper">
+			  <div class="chart-title">
+				Job Type per Borough (Q4 2021)
+			  </div>
+			  <div class="chart-stage">
+					<iframe width="100%" height="350px" frameborder="0" scrolling="no" src="https://nycdob.github.io/NVD3_DOB/examples/PermitsIssuedRenewedByJobTypeBoros_Q4_2021"></iframe>
+			  </div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-4">
+			<div class="chart-wrapper">
+				  <div class="chart-title">
+					Permits Time Series (Q1 2000 - Q4 2021)
+				  </div>
+				  <div class="chart-stage">
+						<iframe width="100%" height="350px" frameborder="0" scrolling="no" src="https://nycdob.github.io/NVD3_DOB/examples/PermitsTS_Q12000_Q42021_qtrs"></iframe>
+				  </div>
+			</div>
+		</div>  
+		<div class="col-sm-6 col-md-4">
+			<div class="chart-wrapper">
+			  <div class="chart-title">
+				Active NB & A1 (Q1 2000 - Q4 2021) <a href="https://nycdob.github.io/NVD3_DOB/examples/TotalSQFT_NB_A1_Q12000_Q42021_NEW_METHOD" target="NBA1"><font color="#02c7ea">Square Feet</font></a> |
+						<a href="https://nycdob.github.io/NVD3_DOB/examples/ProposedDwellingUnits_NB_A1_Q12000_Q42021_NEW_METHOD" target="NBA1"><font color="#02c7ea">Proposed Dwelling Units</font></a>
+			  </div>
+			  <div class="chart-stage">
+					<iframe width="100%" height="350px" frameborder="0" scrolling="no" id="show" name="NBA1"></iframe>	
+			  </div>
+			</div>
+		</div>
+	</div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Permit Types by Community District (Q4 2021)
+          </div>
+          <div class="chart-map">
+            
+				<iframe width="800px" height="645px" frameborder="0" scrolling="no" src="https://nycdob.github.io/D3_Permit_Draft/PermitsMap_Q4_2021" onload="this.style.height=this.contentDocument.body.scrollHeight + 'px';"></iframe>
+            
+          </div>
+
+        </div>
+      </div>
+	  
+		<div class="col-sm-6 col-md-6">
+			<div class="chart-wrapper">
+				<div class="chart-title">
+					Top 20 Development Projects (Q4 2021)
+				</div>
+					<div class="chart-stage" style="overflow-y:hidden; padding:7px; height:640px";>
+						<iframe width="100%" height="626" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="" src="https://nycdob.github.io/D3_Top20DevProjects/index_Q42021"></iframe>
+					</div>
+			</div>
+		</div>
+    </div> 
+</div>
+</body>
+</html>
+<hr>
+
+    <p class="small text-muted">Built by DOB Analytics</a></p>
+
+
+  
+
+
+  <!-- <script type="text/javascript" src="../../assets/lib/jquery/dist/jquery.min.js"></script> -->
+<script type="text/javascript" src="https://nycdob.github.io/DOB_Dashboards/assets/lib/jquery/dist/jquery.min.js"></script>
+  <!-- <script type="text/javascript" src="../../assets/lib/bootstrap/dist/js/bootstrap.min.js"></script> -->
+<script type="text/javascript" src="https://nycdob.github.io/DOB_Dashboards/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- <script type="text/javascript" src="../../assets/lib/holderjs/holder.js"></script> -->
+<script type="text/javascript" src="https://nycdob.github.io/DOB_Dashboards/assets/lib/holderjs/holder.js"></script>
+  <script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+  </script>
+
+  <!-- <script type="text/javascript" src="../../assets/lib/keen-js/dist/keen.min.js"></script> -->
+<script type="text/javascript" src="https://nycdob.github.io/DOB_Dashboards/assets/lib/keen-js/dist/keen.min.js"></script>
+  <!-- <script type="text/javascript" src="../../assets/js/meta.js"></script> -->
+<script type="text/javascript" src="https://nycdob.github.io/DOB_Dashboards/assets/js/meta.js"></script>
+<script>
+var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1;
+	var yyyy = today.getFullYear();
+	today = mm + '/' + dd + '/' + yyyy;
+	d3.select("#today").html(today);
+	
+	
+        $('body').ready(function() {
+            // preload iframe with message
+            var iframe = document.getElementById('show').src = 'https://nycdob.github.io/NVD3_DOB/examples/TotalSQFT_NB_A1_Q12000_Q42021_NEW_METHOD';
+            var iframedoc = iframe.contentDocument || iframe.contentWindow.document;
+			<!-- iframedoc.body.innerHTML; -->
+            <!-- iframedoc.body.innerHTML = ''; -->
+                <!-- + '<br><br>' -->
+                <!-- + '<div style="text-align: center; color: #666666; font-family: Lato; font-size: 15px; font-weight:bold;">' -->
+                <!-- + 'Click the links above to load the metric here' -->
+                <!-- + '</div>'; -->
+			
+		
+            $('.showbases').click(function(evt){
+                evt.preventDefault();
+                evt.stopPropagation();
+                $(evt.target).fadeOut();
+                $('.chartlinks').stop().slideUp({complete: function() {
+                    $('.showcharts').fadeIn();
+                    $('.baselinks').slideDown();
+                }});
+            });
+            $('.showcharts').click(function(evt){
+                evt.preventDefault();
+                evt.stopPropagation();
+                $(evt.target).fadeOut();
+                $('.baselinks').stop().slideUp({complete: function() {
+                    $('.showbases').fadeIn();
+                    $('.chartlinks').slideDown();
+                }});
+            });
+            $('.examplelinks a').each(function(i, elem) {
+                $(elem).click(function(evt) {
+                    $('#show').prop('src', $(evt.target).prop('href'));
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    $('.examplelinks a').removeClass('selected');
+                    $(evt.target).addClass('selected');
+                    // add link to source
+                    var urlparts = $(evt.target).prop('href').split('/');
+                    var file = urlparts[urlparts.length - 1];
+                    var sourceurl = 'https://github.com/nvd3-community/nvd3/blob/gh-pages/examples/' + file;
+                    $('#tosource').prop('href', sourceurl).fadeIn();
+                    // also set link to view only the example
+                    $('#showonlythis').prop('href', $(evt.target).prop('href'));
+                    // done
+                    $('#example_options').attr('style', '');
+                    return false;
+                });
+            });
+        });
+	
+	
+	
+var client = new Keen({
+  projectId: "5368fa5436bf5a5623000000",
+  readKey: "3f324dcb5636316d6865ab0ebbbbc725224c7f8f3e8899c7733439965d6d4a2c7f13bf7765458790bd50ec76b4361687f51cf626314585dc246bb51aeb455c0a1dd6ce77a993d9c953c5fc554d1d3530ca5d17bdc6d1333ef3d8146a990c79435bb2c7d936f259a22647a75407921056"
+});
+Keen.ready(function(){
+  // ----------------------------------------
+  // Sample one
+  // ----------------------------------------
+  var pageviews_timeline = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    interval: "hourly",
+    groupBy: "user.device_info.browser.family",
+    timeframe: {
+      start: "2014-05-04T00:00:00.000Z",
+      end: "2014-05-05T00:00:00.000Z"
+    }
+  });
+  client.draw(pageviews_timeline, document.getElementById("chart-01"), {
+    chartType: "areachart",
+    title: false,
+    height: 250,
+    width: "auto",
+    chartOptions: {
+      chartArea: {
+        height: "85%",
+        left: "5%",
+        top: "5%",
+        width: "80%"
+      },
+      isStacked: true
+    }
+  });
+  // ----------------------------------------
+  //  End sample one
+  // ----------------------------------------
+  // ----------------------------------------
+  // Sample two
+  // ----------------------------------------
+  var pageviews_static = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "user.device_info.browser.family",
+    timeframe: {
+      start: "2014-05-01T00:00:00.000Z",
+      end: "2014-05-05T00:00:00.000Z"
+    }
+  });
+  client.draw(pageviews_static, document.getElementById("chart-02"), {
+    chartType: "piechart",
+    title: false,
+    height: 250,
+    width: "auto",
+    chartOptions: {
+      chartArea: {
+        height: "85%",
+        left: "5%",
+        top: "5%",
+        width: "100%"
+      },
+      pieHole: .4
+    }
+  });
+  // ----------------------------------------
+  // End sample two
+  // ----------------------------------------
+  // ----------------------------------------
+  // Sample three
+  // ----------------------------------------
+  var impressions_timeline = new Keen.Query("count", {
+    eventCollection: "impressions",
+    groupBy: "ad.advertiser",
+    interval: "hourly",
+    timeframe: {
+      start: "2014-05-04T00:00:00.000Z",
+      end: "2014-05-05T00:00:00.000Z"
+    }
+  });
+  client.draw(impressions_timeline, document.getElementById("chart-03"), {
+    chartType: "columnchart",
+    title: false,
+    height: 250,
+    width: "auto",
+    chartOptions: {
+      chartArea: {
+        height: "75%",
+        left: "10%",
+        top: "5%",
+        width: "60%"
+      },
+      bar: {
+        groupWidth: "85%"
+      },
+      isStacked: true
+    }
+  });
+  // ----------------------------------------
+  // End sample three
+  // ----------------------------------------
+  // ----------------------------------------
+  // Sample four
+  // ----------------------------------------
+  var impressions_timeline_by_device = new Keen.Query("count", {
+    eventCollection: "impressions",
+    groupBy: "user.device_info.device.family",
+    interval: "hourly",
+    timeframe: {
+      start: "2014-05-04T00:00:00.000Z",
+      end: "2014-05-05T00:00:00.000Z"
+    }
+  });
+  client.draw(impressions_timeline_by_device, document.getElementById("chart-04"), {
+    chartType: "columnchart",
+    title: false,
+    height: 250,
+    width: "auto",
+    chartOptions: {
+      chartArea: {
+        height: "75%",
+        left: "10%",
+        top: "5%",
+        width: "60%"
+      },
+      bar: {
+        groupWidth: "85%"
+      },
+      isStacked: true
+    }
+  });
+  // ----------------------------------------
+  // End sample four
+  // ----------------------------------------
+  // ----------------------------------------
+  // Sample five
+  // ----------------------------------------
+  var impressions_timeline_by_country = new Keen.Query("count", {
+    eventCollection: "impressions",
+    groupBy: "user.geo_info.country",
+    interval: "hourly",
+    timeframe: {
+      start: "2014-05-04T00:00:00.000Z",
+      end: "2014-05-05T00:00:00.000Z"
+    }
+  });
+  client.draw(impressions_timeline_by_country, document.getElementById("chart-05"), {
+    chartType: "columnchart",
+    title: false,
+    height: 250,
+    width: "auto",
+    chartOptions: {
+      chartArea: {
+        height: "75%",
+        left: "10%",
+        top: "5%",
+        width: "60%"
+      },
+      bar: {
+        groupWidth: "85%"
+      },
+      isStacked: true
+    }
+  });
+  // ----------------------------------------
+  // End sample five
+  // ----------------------------------------
+  var impressions_timeline_by_country = new Keen.Query("count", {
+    eventCollection: "impressions",
+    groupBy: "user.geo_info.country",
+    interval: "hourly",
+    timeframe: {
+      start: "2014-05-04T00:00:00.000Z",
+      end: "2014-05-05T00:00:00.000Z"
+    }
+  });
+  client.draw(impressions_timeline_by_country, document.getElementById("chart-06"), {
+    chartType: "columnchart",
+    title: false,
+    height: 250,
+    width: "auto",
+    chartOptions: {
+      chartArea: {
+        height: "75%",
+        left: "10%",
+        top: "5%",
+        width: "60%"
+      },
+      bar: {
+        groupWidth: "85%"
+      },
+      isStacked: true
+    }
+  });
+});
+</script>

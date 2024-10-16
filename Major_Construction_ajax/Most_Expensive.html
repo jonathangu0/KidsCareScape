@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Major Construction - Most Expensive</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ </head>
+ 
+ <style>
+th{
+	background-color: #E8EBEF;
+}
+ </style>
+ 
+
+ <body>
+  <div class="container-fluid">
+
+    <div id="Major_Construction">
+    </div>
+
+  </div>
+ </body>
+</html>
+
+<script>
+$(document).ready(function(){
+ $(function(){
+  $.ajax({
+   url:"https://raw.githubusercontent.com/NYCDOB/DOB_Dashboards/Major_Construction_Tables/Most_Expensive.csv",
+   dataType:"text",
+   success:function(data)
+   {
+    var construction_data = data.split(/\r?\n|\r/);
+    var table_data = '<table class="table table-hover table-condensed">';
+    for(var count = 0; count<construction_data.length; count++)
+
+    {
+     var cell_data = construction_data[count].split(",");
+     table_data += '<tr>';
+     for(var cell_count=1; cell_count<cell_data.length; cell_count++)
+     {
+      if(count === 0)
+      {
+       table_data += '<th>'+cell_data[cell_count]+'</th>';
+      } else if (cell_count === 2) {
+			table_data += '<td>' 
+						+ '<a href="http://a810-bisweb.nyc.gov/bisweb/JobsQueryByNumberServlet?passjobnumber=' 
+						+ cell_data[cell_count] 
+						+ '" target="_blank">' 
+						+ cell_data[cell_count] 
+						+ '</a>' 
+						+ '</td>';
+		  }
+      else
+      {
+       table_data += '<td>'+cell_data[cell_count]+'</td>';
+      }
+     }
+     table_data += '</tr>';
+    }
+    table_data += '</table>';
+    $('#Major_Construction').html(table_data);
+   }
+  });
+ });
+ 
+});
+</script>

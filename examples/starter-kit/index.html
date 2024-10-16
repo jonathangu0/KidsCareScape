@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DOB Complaints</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <link rel="stylesheet" type="text/css" href="../../assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../examples/starter-kit/complaints-dashboard.css" />
+</head>
+<body class="application">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <img data-src="holder.js/100%x50/white">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <img data-src="holder.js/100%x50/white">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <img data-src="holder.js/100%x50/white">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <img data-src="holder.js/100%x50/white">
+        </div>
+      </div>
+    </div>
+	
+    <div class="row">
+
+      <div class="col-sm-9">
+        <div class="chart-wrapper">
+			<div class="chart-map">
+				<iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="DemolitionPermitsDensity2016" src="https://nycdob.github.io/D3_DM_TimeSeries/NB_Density_TimeSeries"></iframe>
+			</div>
+        </div>
+      </div>
+
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Citywide Stats by Month
+          </div>
+          <div class="chart-stage2">
+            <iframe width="100%" frameborder="0" scrolling="no" src="https://plot.ly/~tim_martin76/103.embed"></iframe>
+          </div>
+        </div>
+		<div class="chart-wrapper">
+          <div class="chart-stage2">
+            <iframe width="100%" frameborder="0" scrolling="no" src="https://plot.ly/~tim_martin76/109.embed"></iframe>
+          </div>
+        </div>
+		<div class="chart-wrapper">
+          <div class="chart-stage2">
+            <iframe width="100%" frameborder="0" scrolling="no" src="https://plot.ly/~tim_martin76/111.embed"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row2">
+
+      <div class="col-sm-3point5">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total Complaints by Borough
+          </div>
+          <div class="chart-stage">
+            <iframe width="100%" frameborder="0" scrolling="no" src="https://plot.ly/~tim_martin76/105.embed"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-3point5">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Top 10 Community Districts with Most Complaints
+          </div>
+          <div class="chart-stage">
+            <iframe width="100%" frameborder="0" scrolling="no" src="https://plot.ly/~tim_martin76/107.embed"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-3-bottom">
+        <div class="chart-wrapper">
+          <div class="chart-stage3">
+            <iframe width="100%" frameborder="0" scrolling="no" src="https://nycdob.github.io/NVD3_DOB/examples/Permits_CD_Top10"></iframe>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="text/javascript" src="../../assets/lib/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="../../assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="../../assets/lib/holderjs/holder.js"></script>
+  <script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+  </script>
+
+  <script type="text/javascript" src="../../assets/lib/keen-js/dist/keen.min.js"></script>
+  <script type="text/javascript" src="../../assets/js/meta.js"></script>
+  <script type="text/javascript" src="keen.dashboard.js"></script>
+
+</body>
+</html>

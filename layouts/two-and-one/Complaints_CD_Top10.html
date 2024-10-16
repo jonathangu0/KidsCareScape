@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="../../build/nv.d3.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="style3_d3.css" type="text/css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../assets/css/keen-dashboards.css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js" charset="utf-8"></script>
+    <script src="../../build/nv.d3.js"></script>
+
+    <style>
+        text {
+            font: 14px sans-serif;
+        }
+        svg {
+            display: block;
+        }
+        html, body, #chart1, svg {
+            margin: 0px;
+            padding: 0px;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+  <div class="row">
+    <div id="rmain-wrapper">
+      
+      <div id="metrics">
+        <div >
+          <ul>
+            <li data-metric="HC01_EST_VC04" class="selected HC01_EST_VC04">Top 10 CM Citywide</li>
+            <li data-metric="HC01_EST_VC04">Manhattan</li>
+            <li data-metric="HC01_EST_VC04">Bronx</li>
+            <li data-metric="HC01_EST_VC04">Brooklyn</li>
+            <li data-metric="HC01_EST_VC04">Queens</li>
+            <li data-metric="HC01_EST_VC04">Staten Island</li>
+  
+              </ul>
+            </div>
+            <div id="main-wrapper">
+              <div class="clr"></div>
+          </div>
+      </div>
+      </div>
+  <div >
+<div id="chart1" class='with-3d-shadow with-transitions'>
+    
+    <svg></svg>
+</div>
+</div>
+<script>
+    historicalBarChart = [
+     {
+    key: "Dirty Condition",
+    color: "#8dd3c7",
+    values:
+    
+    [      
+     { x : "301-Brooklyn", y : 1860 },
+      { x : "412-Queens", y : 1493 },
+      { x : "305-Brooklyn", y : 1091 },
+      { x : "101-Manhattan", y : 266 },
+      { x : "401-Queens", y : 1416 },
+	  { x : "102-Manhattan", y : 1022 },
+	  { x : "405-Queens", y : 1125 },
+	  { x : "303-Brooklyn", y : 1350 },
+	  { x : "413-Queens", y : 817 },
+	  { x : "318-Brooklyn", y : 724}
+	]
+  },
+ {
+    key: "Direlict Vehicles",
+    color: "#fdb462",
+    values:
+    [      
+        {x: "301-Brooklyn", y : 632},
+        {x: "412-Queens", y : 2187},
+        {x: "305-Brooklyn", y : 1649},
+        {x: "101-Manhattan", y : 43},
+        {x: "401-Queens", y : 1172},
+        {x: "102-Manhattan", y : 48},
+        {x: "405-Queens", y : 1389},
+        {x: "303-Brooklyn", y : 722},
+        {x: "413-Queens", y : 1428},
+        {x: "318-Brooklyn", y : 1833}
+
+   ]
+  },
+    {key: "Illegal Dumping",
+    
+    color: "#C0504D",
+    values:
+    [      
+        {x: "301-Brooklyn", y : 958},
+        {x: "412-Queens", y : 1533},
+        {x: "305-Brooklyn", y : 1508},
+        {x: "101-Manhattan", y : 142},
+        {x: "401-Queens", y : 887},
+        {x: "102-Manhattan", y : 872},
+        {x: "405-Queens", y : 761},
+        {x: "303-Brooklyn", y : 864},
+        {x: "413-Queens", y : 929},
+        {x: "318-Brooklyn", y : 774}
+
+    ]
+  },
+ 
+  {
+    key: "Missed Collection",
+	
+    color: "#bc80bd",
+    values:
+    [      
+        {x: "301-Brooklyn", y : 1150},
+        {x: "412-Queens", y : 1124},
+        {x: "305-Brooklyn", y : 709},
+        {x: "101-Manhattan", y : 72},
+        {x: "401-Queens", y : 606},
+        {x: "102-Manhattan", y : 376},
+        {x: "405-Queens", y : 556},
+        {x: "303-Brooklyn", y : 746},
+        {x: "413-Queens", y : 749},
+        {x: "318-Brooklyn", y : 581}
+
+
+    ]
+  },
+   {
+    key: "Obstruction",
+    color: "#80b1d3",
+    values:
+    [      
+        {x: "301-Brooklyn", y : 322},
+        {x: "412-Queens", y : 990},
+        {x: "305-Brooklyn", y : 299},
+        {x: "101-Manhattan", y : 84},
+        {x: "401-Queens", y : 271},
+        {x: "102-Manhattan", y : 1482},
+        {x: "405-Queens", y : 356},
+        {x: "303-Brooklyn", y : 203},
+        {x: "413-Queens", y : 700},
+        {x: "318-Brooklyn", y : 356}
+
+    ]
+  },
+  {
+    key: "Graffiti",
+    color: "#fdb462",
+    values:
+    [      
+        {x: "301-Brooklyn", y : 3152},
+        {x: "412-Queens", y : 96},
+        {x: "305-Brooklyn", y : 134},
+        {x: "101-Manhattan", y : 60},
+        {x: "401-Queens", y : 338},
+        {x: "102-Manhattan", y : 466},
+        {x: "405-Queens", y : 165},
+        {x: "303-Brooklyn", y : 350},
+        {x: "413-Queens", y : 24},
+        {x: "318-Brooklyn", y : 109}
+
+	]
+  },
+  {
+    key: "Residential Disposal Complaint",
+    color: "#b3de69",
+    values:
+    [   
+      {x: "301-Brooklyn", y : 277},
+      {x: "412-Queens", y : 215},
+      {x: "305-Brooklyn", y : 169},
+      {x: "101-Manhattan", y : 42},
+      {x: "401-Queens", y : 202},
+      {x: "102-Manhattan", y : 682},
+      {x: "405-Queens", y : 238},
+      {x: "303-Brooklyn", y : 306},
+      {x: "413-Queens", y : 131},
+      {x: "318-Brooklyn", y : 165}
+
+	]
+  },
+  {
+    key: "Dead Animal",
+    color: "#de697d",
+    values:
+    [      
+      {x: "301-Brooklyn", y : 192},
+      {x: "412-Queens", y : 365},
+      {x: "305-Brooklyn", y : 146},
+      {x: "101-Manhattan", y : 27},
+      {x: "401-Queens", y : 168},
+      {x: "102-Manhattan", y : 56},
+      {x: "405-Queens", y : 165},
+      {x: "303-Brooklyn", y : 154},
+      {x: "413-Queens", y : 345},
+      {x: "318-Brooklyn", y : 381}
+	]
+  },
+  {
+    key: "Sweeping Complaint",
+    color: "#8c69de",
+    values:
+    [      
+        {x: "301-Brooklyn", y : 247},
+        {x: "412-Queens", y : 62},
+        {x: "305-Brooklyn", y : 388},
+        {x: "101-Manhattan", y : 5},
+        {x: "401-Queens", y : 146},
+        {x: "102-Manhattan", y : 84},
+        {x: "405-Queens", y : 97},
+        {x: "303-Brooklyn", y : 268},
+        {x: "413-Queens", y : 14},
+        {x: "318-Brooklyn", y : 238}
+]
+  },
+  {
+    key: "Other",
+
+    color: "#69de6f",
+    values:
+    [      
+      {x: "301-Brooklyn", y : 10854},
+      {x: "412-Queens", y : 9295},
+      {x: "305-Brooklyn", y : 8047},
+      {x: "101-Manhattan", y : 12063},
+      {x: "401-Queens", y : 6964},
+      {x: "102-Manhattan", y : 6984},
+      {x: "405-Queens", y : 6344},
+      {x: "303-Brooklyn", y : 6135},
+      {x: "413-Queens", y : 5959},
+      {x: "318-Brooklyn", y : 5691}
+]
+  }
+
+  
+];
+    nv.addGraph(function() {
+        var chart = nv.models.multiBarChart()
+        .showControls(true)
+	.staggerLabels(true)
+        .stacked(true);
+        chart.yAxis
+            .tickFormat(d3.format(',.0f'))
+            .axisLabelDistance(0);
+        chart.xAxis
+            .axisLabel('');
+        chart
+            .reduceXTicks(false)
+          
+        d3.select('#chart1 svg')
+            .datum(historicalBarChart)
+            .call(chart);
+        nv.utils.windowResize(chart.update);
+		
+        return chart;
+    });
+</script>
+</body>
+</html>
