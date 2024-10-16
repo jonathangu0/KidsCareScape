@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Childcare Centerss</title>
+<title>Childcare Centers</title>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="../../keen/keen-dashboards.css" />
@@ -77,47 +77,6 @@
 	}
 
 
-
-	/* @media( max-width:1200px){
-	.dobmain	{
-		padding-top:50px;
-	}
-	.legendShed {
-		visibility:hidden;
-	}
-	.legendCD {
-		visibility:hidden;
-	}
-	.ui {
-		margin-top: -150px;
-	}
-}
-
-@media ( max-width:2100px){
-	.summarytxt_sheds {
-		font-size: 12px !important;
-	}
-	.summarytxt_avgAge {
-		font-size: 12px !important;
-	}
-	.summarytxt_feet {
-		font-size: 12px !important;
-	}
-	#summary1_sheds {
-		font-size: 25px !important;
-	}
-	#summary2_avgAge {
-		font-size: 25px !important;
-	}
-	#summary3_feet {
-		font-size: 25px !important;
-	}
-	.summarytxt {
-		font-size: 12px !important;
-	}
-} */
-
-
 	svg {
 		display: block;
 	}
@@ -126,13 +85,7 @@
 	#chart-01 {
 		box-sizing: border-box;
 		width: 100%;
-		< !-- height: 150px;
-		-->height: 100%;
-		< !-- border: 0.5px solid gray;
-		-->float: left;
-		background-color: #dfdfdf;
-		< !-- margin: 0px 0px 12px;
-		-->
+		
 	}
 
 	#chart-boro-facades {
@@ -190,22 +143,14 @@
 		box-sizing: border-box;
 		width: 100%;
 		height: 200px;
-		< !-- border: 0.5px solid gray;
-		-->float: left;
-		background-color: #dfdfdf;
-		< !-- margin: 0px 0px 12px;
-		-->
+		
 	}
 
 	#chart-pend {
 		box-sizing: border-box;
 		width: 100%;
 		height: 230px;
-		< !-- border: 0.5px solid gray;
-		-->float: left;
-		background-color: #dfdfdf;
-		< !-- margin: 0px 0px 12px;
-		-->
+		
 	}
 
 	.summarytxt {
@@ -1230,7 +1175,7 @@
 
 				});
 
-				d3.csv("https://raw.githubusercontent.com/data-go-deep/KidsCareScape/refs/heads/gh-pages/data_dc/DOHMH_Childcare_Center.csv", function (data) {
+				d3.csv("https://raw.githubusercontent.com/jonathangu0/KidsCareScape/refs/heads/gh-pages/data_dc/DOHMH_Childcare_Center.csv", function (data) {
 					points = data.filter(function (d) {
 						if (((+d["latitude"] != 0) && (+d["longitude"] != 0))) {
 							
@@ -1268,280 +1213,6 @@
 
 
 
-					//CHARTS
-
-					//TOTAL FACADE FILINGS
-					var totalSheds = points.map(function (d) { return d.controlNum });
-					console.log(totalSheds);
-					d3.select("#summary1_sheds").html(numberFormat(totalSheds.length));
-
-					//BOROUGH			
-					var nestBoroSheds = d3.nest()
-						.key(function (d) { return d.Borough; })//.sortKeys(d3.ascending)
-						.rollup(function (v) {
-							return v.length;
-						})
-						.entries(points)
-						.sort(function (a, b) { return d3.descending(a.values, b.values); })
-					console.log(nestBoroSheds);
-					shedBoroChart(nestBoroSheds);
-
-					//CURRENT STATUS			
-					var nestFilingStatus = d3.nest()
-						.key(function (d) { return (d.filingStatus).toUpperCase(); })//.sortKeys(d3.ascending)
-						.rollup(function (v) {
-							return v.length;
-						})
-						.entries(points)
-						.sort(function (a, b) { return d3.descending(a.values, b.values); })
-					console.log(nestFilingStatus);
-					statusChart(nestFilingStatus);
-
-
-					//SUB CYCLES
-					var nestCycles = d3.nest()
-						.key(function (d) { return d.cycle; })
-						.rollup(function (v) {
-							return v.length;
-						})
-						.entries(points)
-						.sort(function (a, b) { return d3.descending(a.values, b.values); })//.slice(0,5);	
-					console.log(nestCycles);
-					cycleChart(nestCycles);
-
-
-					//PENDING INSPECTIONS
-					var nestPending = d3.nest()
-						.key(function (d) {
-							if (d.pending == 'Y') {
-								return 'TRUE'
-							} else {
-								return 'FALSE'
-							}
-						})
-						.rollup(function (v) {
-							return v.length;
-						})
-						.entries(points)
-						.sort(function (a, b) { return d3.descending(a.values, b.values); })//.slice(0,5);	
-					console.log(nestPending);
-					pendChart(nestPending);
-
-
-					function shedBoroChart(data) {
-						var shedBoroData = [
-							{
-								key: "totals",
-								values: []
-							}
-						];
-
-						// populate the empty object with your data
-						data.forEach(function (d) {
-							d.values = +d.values
-							shedBoroData[0].values.push(d)
-						})
-
-
-						nv.addGraph(function () {
-							var chart = nv.models.discreteBarChart()
-								.x(function (d) {
-									return d.key
-								})
-								.y(function (d) {
-									return d.values
-								})
-								.duration(250)
-								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
-								.color(['#7899b0']);
-							chart.yAxis.tickFormat(d3.format(','));
-
-							chart.xAxis.tickFormat(function (d) {
-								if (typeof this != 'undefined') {
-									var el = d3.select(this);
-									var p = d3.select(this.parentNode);
-									p.append("foreignObject")
-										.attr('x', -100)
-										.attr("width", 200)
-										.attr("height", 200)
-										.append("xhtml:p")
-										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif;')
-										.html(d);
-									el.remove();
-									return d;
-								}
-							});
-
-							d3.select('#chart-boro-facades svg')
-								.datum(shedBoroData)
-								.transition().duration(250)
-								.call(chart);
-							nv.utils.windowResize(chart.update);
-							return chart;
-						});
-					}
-
-					function statusChart(data) {
-						var statusData = [
-							{
-								key: "totals",
-								values: []
-							}
-						];
-
-						// populate the empty object with your data
-						data.forEach(function (d) {
-							d.values = +d.values
-							statusData[0].values.push(d)
-						})
-
-
-						nv.addGraph(function () {
-							var chart = nv.models.discreteBarChart()
-								.x(function (d) {
-									return d.key
-								})
-								.y(function (d) {
-									return d.values
-								})
-								.duration(250)
-								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
-								.color(['#7899b0']);
-							chart.yAxis.tickFormat(d3.format(','));
-
-							chart.xAxis.tickFormat(function (d) {
-								if (typeof this != 'undefined') {
-									var el = d3.select(this);
-									var p = d3.select(this.parentNode);
-									p.append("foreignObject")
-										.attr('x', -100)
-										.attr("width", 200)
-										.attr("height", 200)
-										.append("xhtml:p")
-										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif;')
-										.html(d);
-									el.remove();
-									return d;
-								}
-							});
-
-							d3.select('#chart-status svg')
-								.datum(statusData)
-								.transition().duration(250)
-								.call(chart);
-							nv.utils.windowResize(chart.update);
-							return chart;
-						});
-					}
-
-					function cycleChart(data) {
-						var shedCDData = [
-							{
-								key: "totals",
-								values: []
-							}
-						];
-
-						// populate the empty object with your data
-						data.forEach(function (d) {
-							d.values = +d.values
-							shedCDData[0].values.push(d)
-						})
-
-
-						nv.addGraph(function () {
-							var chart = nv.models.discreteBarChart()
-								.x(function (d) {
-									return d.key
-								})
-								.y(function (d) {
-									return d.values
-								})
-								.duration(250)
-								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
-								.color(['#7899b0']);
-							chart.yAxis.tickFormat(d3.format(','));
-
-							chart.xAxis.tickFormat(function (d) {
-								if (typeof this != 'undefined') {
-									var el = d3.select(this);
-									var p = d3.select(this.parentNode);
-									p.append("foreignObject")
-										.attr('x', -100)
-										.attr("width", 200)
-										.attr("height", 200)
-										.append("xhtml:p")
-										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif;')
-										.html(d);
-									el.remove();
-									return d;
-								}
-							});
-
-							d3.select('#subcycles')
-								.datum(shedCDData)
-								.transition().duration(250)
-								.call(chart);
-							nv.utils.windowResize(chart.update);
-							return chart;
-						});
-					}
-
-					function pendChart(data) {
-						var pendData = [
-							{
-								key: "totals",
-								values: []
-							}
-						];
-
-						// populate the empty object with your data
-						data.forEach(function (d) {
-							d.values = +d.values
-							pendData[0].values.push(d)
-						})
-
-						nv.addGraph(function () {
-							var chart = nv.models.discreteBarChart()
-								.x(function (d) {
-									return d.key
-								})
-								.y(function (d) {
-									return d.values
-								})
-								.duration(250)
-								.margin({ top: 15, right: 10, bottom: 20, left: 50 })
-								.color(['#7899b0']);
-							chart.yAxis.tickFormat(d3.format(','));
-
-							chart.xAxis.axisLabelDistance(10);
-							chart.xAxis.tickFormat(function (d) {
-								if (typeof this != 'undefined') {
-									var el = d3.select(this);
-									var p = d3.select(this.parentNode);
-									p.append("foreignObject")
-										.attr('x', -100)
-										.attr("width", 200)
-										.attr("height", 200)
-										.append("xhtml:p")
-										.attr('style', 'word-wrap: break-word; text-align:center; font: normal 10px sans-serif; pointer-events: auto;')
-										.html(d);
-									el.remove();
-									return d;
-								}
-
-							});
-
-							d3.select('#pendInsp')
-								.datum(pendData)
-								.transition().duration(250)
-								.call(chart);
-							nv.utils.windowResize(chart.update);
-							return chart;
-						}
-						);
-
-					}
 
 				});
 
